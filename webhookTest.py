@@ -13,7 +13,7 @@ def call_webhook(url, payload):
 @flow(log_prints=True)
 def hit_webhook(name):
     url = "https://webhook.site/ed1c1eb5-6e05-4358-a8b6-a8f3cfdd030e"
-    payload = {"message1": name}
+    payload = {"nameOfUser": name}
     resp = call_webhook(url, payload)
     print('~~~~~~~~response is ' + resp)
 
