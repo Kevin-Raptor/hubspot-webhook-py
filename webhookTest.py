@@ -11,13 +11,13 @@ def call_webhook(url, payload):
         return "no"
     
 @flow(log_prints=True)
-def hit_webhook(name):
+def my_webhook():
     url = "https://webhook.site/ed1c1eb5-6e05-4358-a8b6-a8f3cfdd030e"
-    payload = {"nameOfUser": name}
+    payload = {"nameOfUser": 'John Doe'}
     resp = call_webhook(url, payload)
-    print('~~~~~~~~response is ' + resp + 'for ' + name)
+    # print('~~~~~~~~response is ' + resp + 'for ' + name)
 
 
 
 if __name__ == "__main__":
-    hit_webhook()
+    my_webhook()
