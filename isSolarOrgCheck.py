@@ -79,7 +79,7 @@ def isSolarOrgCheck(contact_id,org_name,bearer_token):
         print(f"Is 'solar' present in the homepage? {result}")
         update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
         payload = {"company": org_name, "vid": contact_id, "isSolar": result, "updateHubSpot": update_hubspot_result}
-        resp = call_webhook(url, payload)
+        resp = call_webhook(payload)
         
         
     else:
