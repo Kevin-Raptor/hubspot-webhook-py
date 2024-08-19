@@ -70,7 +70,7 @@ def update_hubspot(contact_id, org_name, is_solar, bearer_token):
         return "no"
 
 @flow(log_prints=True)
-def isSolarOrgCheck(contact_id,org_name,bearer_token):
+def isSolar(contact_id,org_name,bearer_token):
     # org_name = get_org_name()
     first_url = google_search(org_name)
     if first_url:
@@ -90,4 +90,4 @@ def isSolarOrgCheck(contact_id,org_name,bearer_token):
         print("No valid URL found in search results.")
 
 if __name__ == "__main__":
-    isSolarOrgCheck()
+    isSolar()
