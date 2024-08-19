@@ -66,7 +66,7 @@ def update_hubspot(contact_id, org_name, is_solar):
 
         url = f'https://api.hubapi.com/crm/v3/objects/contacts/{contact_id}'
         headers = {
-            "authorization": "Bearer abc"
+            
         }
         data = {
             "properties": {
@@ -84,7 +84,7 @@ def update_hubspot(contact_id, org_name, is_solar):
         logging.error(f"Value error: {e}")
         return False
 
-def isSolarOrgCheck(contact_id,org_name):
+def isSolarOrgCheck(contact_id,org_name,bearer_token):
     # org_name = get_org_name()
     first_url = google_search(org_name)
     if first_url:
@@ -99,4 +99,4 @@ def isSolarOrgCheck(contact_id,org_name):
         print("No valid URL found in search results.")
 
 if __name__ == "__main__":
-    isSolarOrgCheck(45686033552, 'Solaria')
+    isSolarOrgCheck(49571224675, 'Solaria')
