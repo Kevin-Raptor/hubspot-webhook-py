@@ -4,11 +4,13 @@ from urllib.parse import urlparse, parse_qs
 
 def get_google_search_results(search_query):
     url = f"https://www.google.com/search?q={requests.utils.quote(search_query + ' company')}"
+    print('Google search URL:', url)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }
     try:
         response = requests.get(url, headers=headers)
+        print('Response:', response.text)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         links = []
@@ -17,6 +19,7 @@ def get_google_search_results(search_query):
             'wikipedia.org', 'google.com', 'twitter.com', 'amazon.com', 'yelp.com', 
             'tripadvisor.com', 'glassdoor.com', 'yellowpages.com'
         ]
+        # print('soup:', soup)
 
         for link in soup.find_all('a'):
             href = link.get('href')
@@ -53,7 +56,7 @@ def is_solar_checker(search_query):
     return results
 
 def main_function():
-    search_query = 'arka solar energy'
+    search_query = 'arka'
     results = is_solar_checker(search_query)
     print('Results:', results)
 
