@@ -34,7 +34,7 @@ def check_solar_in_homepage(url):
         print(f"An error occurred: {e}")
         return False
 
-def isSolarOrgCheck(org_name):
+def isSolarOrgCheck(contact_id,org_name):
     # org_name = get_org_name()
     first_url = google_search(org_name)
     if first_url:
