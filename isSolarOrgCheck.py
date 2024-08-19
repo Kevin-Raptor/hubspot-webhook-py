@@ -46,6 +46,28 @@ def call_webhook(payload):
         return "yes"
     except httpx.HTTPStatusError:
         return "no"
+    
+@task
+def update_hubspot(contact_id, org_name, is_solar):
+    try:
+        url = 'https://api.hubapi.com/crm/v3/objects/contacts/' + str(contact_id)
+        headers = {
+            "authorization": "Bearer YOUR"
+        }
+        data = {
+            "properties": {
+                "is_solar": is_solar
+            }
+        }
+        response = requests.patch(url, headers=headers, json=data)
+        response.raise_for_status()
+        print(f"HubSpot updated successfully for {org_name}")
+        # return true
+        return "yes"
+         
+    except Exception as e:
+        print(f"An error occurred while updating HubSpot: {e}")
+        return "no"
 
 @flow(log_prints=True)
 def isSolarOrgCheck(contact_id,org_name):
@@ -55,7 +77,8 @@ def isSolarOrgCheck(contact_id,org_name):
         print(f"First URL found: {first_url}")
         result = check_solar_in_homepage(first_url)
         print(f"Is 'solar' present in the homepage? {result}")
-        payload = {"company": org_name, "vid": contact_id, "isSolar": result}
+        update_hubspot_result = update_hubspot(contact_id, org_name, result)
+        payload = {"company": org_name, "vid": contact_id, "isSolar": result, "updateHubSpot": update_hubspot_result}
         resp = call_webhook(url, payload)
         
         
