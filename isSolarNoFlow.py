@@ -99,4 +99,8 @@ def isSolarOrgCheck(contact_id,org_name,bearer_token):
         print("No valid URL found in search results.")
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     isSolarOrgCheck(49571224675, 'Solaria')
+=======
+    isSolarOrgCheck(49571224675, 'football', '')
+>>>>>>> 9852d08 (Refactor isSolarOrgCheck function to use httpx for making HTTP requests and remove unnecessary code)
