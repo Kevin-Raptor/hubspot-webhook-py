@@ -50,7 +50,7 @@ def call_webhook(payload):
 @task
 def update_hubspot(contact_id, org_name, is_solar, bearer_token):
     try:
-        url = 'https://api.hubapi.com/crm/v3/objects/contacts/' + str(contact_id)
+        url = 'https://api.hubapi.com/crm/v3/objects/contacts/' + contact_id
         headers = {
             "authorization": "Bearer " + bearer_token
         }
@@ -77,8 +77,10 @@ def isSolarOrgCheck(contact_id,org_name,bearer_token):
         print(f"First URL found: {first_url}")
         result = check_solar_in_homepage(first_url)
         print(f"Is 'solar' present in the homepage? {result}")
-        update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
-        payload = {"company": org_name, "vid": contact_id, "isSolar": result, "updateHubSpot": update_hubspot_result}
+        # update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
+        payload = {"company": org_name, "vid": contact_id, "isSolar": result,
+                #    "updateHubSpot": update_hubspot_result
+                   }
         resp = call_webhook(payload)
         
         
