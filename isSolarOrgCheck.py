@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 from googlesearch import search
+import httpx
+from prefect import task, flow
 
 EXCLUDED_DOMAINS = [
     'facebook.com', 'linkedin.com', 'instagram.com', 'youtube.com', 'pinterest.com',
@@ -12,6 +14,7 @@ EXCLUDED_DOMAINS = [
 #     org_name = input("Enter the organization name: ")
 #     return org_name
 
+@task
 def google_search(org_name):
     try:
         # Perform a Google search and get the first result
@@ -24,6 +27,7 @@ def google_search(org_name):
         print(f"An error occurred during Google search: {e}")
         return None
 
+@task
 def check_solar_in_homepage(url):
     try:
         response = requests.get(url)
@@ -34,6 +38,16 @@ def check_solar_in_homepage(url):
         print(f"An error occurred: {e}")
         return False
 
+@task
+def call_webhook(payload):
+    try:
+        response = httpx.post("https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609", json=payload)
+        response.raise_for_status()
+        return "yes"
+    except httpx.HTTPStatusError:
+        return "no"
+
+@flow(log_prints=True)
 def isSolarOrgCheck(contact_id,org_name):
     # org_name = get_org_name()
     first_url = google_search(org_name)
@@ -41,6 +55,10 @@ def isSolarOrgCheck(contact_id,org_name):
         print(f"First URL found: {first_url}")
         result = check_solar_in_homepage(first_url)
         print(f"Is 'solar' present in the homepage? {result}")
+        payload = {"company": org_name, "vid": contact_id, "isSolar": result}
+        resp = call_webhook(url, payload)
+        
+        
     else:
         print("No valid URL found in search results.")
 

@@ -14,7 +14,6 @@ def call_webhook(url, payload):
 def hs_webhook(name, vid):
     url = "https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609"
     payload = {"company": name, "vid": vid}
-    payload = {"vid": vid}
     resp = call_webhook(url, payload)
     print('~~~~~~~~response is ' + resp + 'for ' + name)
 
