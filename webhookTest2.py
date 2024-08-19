@@ -12,7 +12,7 @@ def call_webhook(url, payload):
     
 @flow(log_prints=True)
 def hs_webhook(name, vid):
-    url = "https://webhook.site/ed1c1eb5-6e05-4358-a8b6-a8f3cfdd030e"
+    url = "https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609"
     payload = {"company": name}
     payload = {"vid": vid}
     resp = call_webhook(url, payload)
