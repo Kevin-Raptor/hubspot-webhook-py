@@ -1,60 +1,93 @@
 import requests
-from prefect import flow
+# from bs4 import BeautifulSoup
+from googlesearch import search
+import httpx
+from prefect import task, flow
 
-def google_search(query):
-    search_url = f"https://www.google.com/search?q={query}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-    }
-    response = requests.get(search_url, headers=headers)
-    if response.status_code == 200:
-        # Manually parse the HTML to find the first URL
-        start_index = response.text.find('<a href="/url?q=') + len('<a href="/url?q=')
-        end_index = response.text.find('&amp;', start_index)
-        if start_index != -1 and end_index != -1:
-            return response.text[start_index:end_index]
-    return None
+EXCLUDED_DOMAINS = [
+    'facebook.com', 'linkedin.com', 'instagram.com', 'youtube.com', 'pinterest.com',
+    'wikipedia.org', 'google.com', 'twitter.com', 'amazon.com', 'yelp.com',
+    'tripadvisor.com', 'glassdoor.com', 'yellowpages.com'
+]
 
-def check_solar_in_homepage(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return "solar" in response.text.lower()
-    return False
+# def get_org_name():
+#     org_name = input("Enter the organization name: ")
+#     return org_name
 
-def update_hubspot(contact_id, org_name, result, bearer_token):
-    # Dummy implementation for updating HubSpot
+@task
+def google_search(org_name):
     try:
-        # Simulate an API call to update HubSpot
-        print(f"Updating HubSpot for contact_id: {contact_id}, org_name: {org_name}, result: {result}")
-        return "success"
+        # Perform a Google search and get the first result
+        search_results = list(search(org_name, num_results=10))
+        for result in search_results:
+            if not any(domain in result for domain in EXCLUDED_DOMAINS):
+                return result
+        return None
+    except Exception as e:
+        print(f"An error occurred during Google search: {e}")
+        return None
+
+# @task
+# def check_solar_in_homepage(url):
+#     try:
+#         response = requests.get(url)
+#         soup = BeautifulSoup(response.text, "html.parser")
+#         text = soup.get_text().lower()
+#         return "solar" in text
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return False
+
+@task
+def call_webhook(payload):
+    try:
+        response = httpx.post("https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609", json=payload)
+        response.raise_for_status()
+        return "yes"
+    except httpx.HTTPStatusError:
+        return "no"
+    
+@task
+def update_hubspot(contact_id, org_name, is_solar, bearer_token):
+    try:
+        url = 'https://api.hubapi.com/crm/v3/objects/contacts/' + contact_id
+        headers = {
+            "authorization": "Bearer " + bearer_token
+        }
+        data = {
+            "properties": {
+                "is_solar": is_solar
+            }
+        }
+        response = requests.patch(url, headers=headers, json=data)
+        response.raise_for_status()
+        print(f"HubSpot updated successfully for {org_name}")
+        # return true
+        return "yes"
+         
     except Exception as e:
         print(f"An error occurred while updating HubSpot: {e}")
         return "no"
 
 @flow(log_prints=True)
-def isSolar(contact_id, org_name, bearer_token):
+def isSolar(contact_id,org_name,bearer_token):
+    # org_name = get_org_name()
     first_url = google_search(org_name)
     if first_url:
         print(f"First URL found: {first_url}")
         result = check_solar_in_homepage(first_url)
         print(f"Is 'solar' present in the homepage? {result}")
-        # update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
-        payload = {
-            "company": org_name,
-            "vid": contact_id,
-            "first_url": first_url,
-            "isSolar": result,
-            # "updateHubSpot": update_hubspot_result
-        }
-        print(f"Payload: {payload}")
-        return payload
+        update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
+        payload = {"company": org_name, "vid": contact_id, 
+                   first_url: first_url,
+                   "isSolar": result,
+                   "updateHubSpot": update_hubspot_result
+                   }
+        resp = call_webhook(payload)
+        
+        
     else:
-        print("No URL found")
-        return None
+        print("No valid URL found in search results.")
 
 if __name__ == "__main__":
-    # Example usage
-    # contact_id = "12345"
-    # org_name = "Arka energy"
-    # bearer_token = "your_bearer_token"
     isSolar()
