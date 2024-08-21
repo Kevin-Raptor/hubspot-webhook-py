@@ -75,12 +75,12 @@ def isSolar(contact_id,org_name,bearer_token):
     first_url = google_search(org_name)
     if first_url:
         print(f"First URL found: {first_url}")
-        # result = check_solar_in_homepage(first_url)
-        # print(f"Is 'solar' present in the homepage? {result}")
+        result = check_solar_in_homepage(first_url)
+        print(f"Is 'solar' present in the homepage? {result}")
         # update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
         payload = {"company": org_name, "vid": contact_id, 
                    first_url: first_url,
-                #    "isSolar": result,
+                   "isSolar": result,
                 #    "updateHubSpot": update_hubspot_result
                    }
         resp = call_webhook(payload)
