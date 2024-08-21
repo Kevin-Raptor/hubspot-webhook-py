@@ -22,7 +22,8 @@ def call_webhook(url, search_result):
     webhook_url = url
 
     payload = {
-        "search_result1": search_result,
+        # "search_result1": search_result,
+        "id": str(uuid.uuid4())
     }
     headers = {
         "Content-Type": "application/json"
