@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 from googlesearch import search
 import httpx
 from prefect import task, flow
@@ -27,16 +27,16 @@ def google_search(org_name):
         print(f"An error occurred during Google search: {e}")
         return None
 
-@task
-def check_solar_in_homepage(url):
-    try:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, "html.parser")
-        text = soup.get_text().lower()
-        return "solar" in text
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return False
+# @task
+# def check_solar_in_homepage(url):
+#     try:
+#         response = requests.get(url)
+#         soup = BeautifulSoup(response.text, "html.parser")
+#         text = soup.get_text().lower()
+#         return "solar" in text
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return False
 
 @task
 def call_webhook(payload):
@@ -75,12 +75,12 @@ def isSolar(contact_id,org_name,bearer_token):
     first_url = google_search(org_name)
     if first_url:
         print(f"First URL found: {first_url}")
-        result = check_solar_in_homepage(first_url)
-        print(f"Is 'solar' present in the homepage? {result}")
+        # result = check_solar_in_homepage(first_url)
+        # print(f"Is 'solar' present in the homepage? {result}")
         # update_hubspot_result = update_hubspot(contact_id, org_name, result, bearer_token)
         payload = {"company": org_name, "vid": contact_id, 
                    first_url: first_url,
-                   "isSolar": result,
+                #    "isSolar": result,
                 #    "updateHubSpot": update_hubspot_result
                    }
         resp = call_webhook(payload)
