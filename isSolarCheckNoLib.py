@@ -41,7 +41,4 @@ def isSolar(contact_id,org_name,bearer_token):
         print("No URL found")
 
 if __name__ == "__main__":
-    contact_id = 123
-    org_name = "Solar Energy Inc."
-    bearer ='asd'
-    isSolar(contact_id,org_name,bearer)
+    isSolar()
