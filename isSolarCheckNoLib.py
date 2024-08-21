@@ -2,6 +2,7 @@ import requests
 from prefect import task, flow
 # from googlesearch import search
 from datetime import datetime
+from faker import Faker
 
 EXCLUDED_DOMAINS = [
     'facebook.com', 'linkedin.com', 'instagram.com', 'youtube.com', 'pinterest.com',
