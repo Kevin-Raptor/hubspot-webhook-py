@@ -1,6 +1,7 @@
 import requests
 from prefect import task, flow
-from googlesearch import search
+# from googlesearch import search
+from datetime import datetime
 
 EXCLUDED_DOMAINS = [
     'facebook.com', 'linkedin.com', 'instagram.com', 'youtube.com', 'pinterest.com',
@@ -23,18 +24,18 @@ EXCLUDED_DOMAINS = [
 #         if start_index != -1 and end_index != -1:
 #             return response.text[start_index:end_index]
 #     return None
-@task
-def google_search(org_name):
-    try:
-        # Perform a Google search and get the first result
-        search_results = list(search(org_name, num_results=10))
-        for result in search_results:
-            if not any(domain in result for domain in EXCLUDED_DOMAINS):
-                return result
-        return None
-    except Exception as e:
-        print(f"An error occurred during Google search: {e}")
-        return None
+# @task
+# def google_search(org_name):
+#     try:
+#         # Perform a Google search and get the first result
+#         search_results = list(search(org_name, num_results=10))
+#         for result in search_results:
+#             if not any(domain in result for domain in EXCLUDED_DOMAINS):
+#                 return result
+#         return None
+#     except Exception as e:
+#         print(f"An error occurred during Google search: {e}")
+#         return None
 
 @task
 def call_webhook(url, search_result):
@@ -51,14 +52,14 @@ def call_webhook(url, search_result):
 
 @flow(log_prints=True)
 def isSolar(contact_id,org_name,bearer_token):
-    first_url = google_search(org_name)
-    if first_url:
-        print(f"First URL found: {first_url}")
-        status_code, response_text = call_webhook('https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609', first_url)
-        print(f"Webhook response status: {status_code}")
-        print(f"Webhook response text: {response_text}")
-    else:
-        print("No URL found")
+    fake = Faker()
+        # Generate a fake name
+    fake_name = fake.name()
+    print(f"First fake name found: {fake_name}")
+    status_code, response_text = call_webhook('https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609', fake_name)
+    print(f"Webhook response status: {status_code}")
+    print(f"Webhook response text: {response_text}")
+   
 
 if __name__ == "__main__":
     isSolar('123','Solar Energy Inc','Bearer token')
