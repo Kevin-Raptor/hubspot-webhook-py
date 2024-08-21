@@ -56,10 +56,10 @@ def isSolar(contact_id,org_name,bearer_token):
         # Generate a fake name
     fake_name = fake.name()
     print(f"First fake name found: {fake_name}")
-    status_code, response_text = call_webhook('https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609', fake_name)
+    status_code, response_text = call_webhook('https://webhook.site/687e9031-fa94-43c1-86e6-001ac2dca609', org_name+fake_name)
     print(f"Webhook response status: {status_code}")
     print(f"Webhook response text: {response_text}")
    
 
 if __name__ == "__main__":
-    isSolar('123','Solar Energy Inc','Bearer token')
+    isSolar()
