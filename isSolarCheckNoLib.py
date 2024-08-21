@@ -24,7 +24,7 @@ def call_webhook(url, search_result):
     new_res = url_pattern.search(search_result)
 
     payload = {
-        "search_result": new_res
+        "search_result1": new_res
     }
     headers = {
         "Content-Type": "application/json"
