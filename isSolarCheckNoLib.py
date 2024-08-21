@@ -1,6 +1,6 @@
 import requests
 from prefect import task, flow
-import re
+import uuid
 @task
 def google_search(query):
     search_url = f"https://www.google.com/search?q={query}"
@@ -20,11 +20,9 @@ def google_search(query):
 @task
 def call_webhook(url, search_result):
     webhook_url = url
-    url_pattern = re.compile(r'www\.[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}')
-    new_res = url_pattern.search(search_result)
 
     payload = {
-        "search_result1": new_res
+        "search_result1": uuid.uuid4()
     }
     headers = {
         "Content-Type": "application/json"
